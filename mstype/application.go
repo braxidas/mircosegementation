@@ -1,31 +1,48 @@
 package mstype
 
 type Application struct {
-	Server ServerConfig `yaml:port`
-	Spring SpringConfig `yaml:spring`
+	Server ServerConfig `yaml:"server"`
+	Spring SpringConfig `yaml:"spring"`
+	Dubbo  DubboConfig  `yaml:"dubbo"`
 }
 
+// #
 type ServerConfig struct {
-	Port string `yaml:port`
+	Port string `yaml:"port"`
 }
 
+// #
 type SpringConfig struct {
-	Application ApplicationConfig `yaml:application`
-	Cloud       CloudConfig       `yaml:cloud`
+	Application ApplicationConfig `yaml:"application"`
+	Cloud       CloudConfig       `yaml:"cloud"`
 }
 
+// ##
 type ApplicationConfig struct {
-	Name string `yaml:name`
+	Name string `yaml:"name"`
 }
 
+// ##
 type CloudConfig struct {
-	Nacos NacosConfig `yaml:nacos`
+	Nacos NacosConfig `yaml:"nacos"`
 }
 
+// ###
 type NacosConfig struct {
-	Discovery DiscoveryConfig `yaml:discovery`
+	Discovery DiscoveryConfig `yaml:"discovery"`
 }
 
+// ####
 type DiscoveryConfig struct {
-	ServerAddr string `yaml:server-addr`
+	ServerAddr string `yaml:"server-addr"`
+}
+
+// #
+type DubboConfig struct {
+	Application ApplicationConfig `yaml:"application"`
+	Registry    RegistryConfig    `yaml:"registry"`
+}
+
+type RegistryConfig struct {
+	Address string `yaml:"address"`
 }

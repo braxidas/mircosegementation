@@ -12,6 +12,7 @@ func main() {
 	myfolder := `target`
 
 	// fileHandler.ListJarFile(myfolder)
+	// fileHandler.TestYaml()
 	fileHandler.ListJarFile(myfolder)
 
 	fmt.Println("hello world")
