@@ -1,4 +1,4 @@
-package filehandler
+package fileHandler
 
 import (
 	// jar "pkg.re/essentialkaos/go-jar.v1"
@@ -14,27 +14,32 @@ import (
 )
 
 // 获得folder文件夹下所有jar文件
-func ListJarFile(folder string) error {
+func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
+	var (
+		applicationList []*mstype.Application
+		pathList []string
+	)
 
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".jar") {
-			fmt.Println(path)
+			// fmt.Println(path)
+			pathList = append(pathList, path)
+
 			application, err := getJarYamlFile(path)
 			if err != nil {
-				fmt.Printf("Error read Jar YAML file %s: %v\n", path, err)
-				return nil
+				return err
 			}
-			fmt.Println(*application)
+
+			// fmt.Println(*application)
+			applicationList = append(applicationList, application)
+
 		}
 		return nil
 	})
-	if err != nil {
-		return err
-	}
-	return nil
+	return applicationList,pathList,err
 }
 
 // 获得指定jar包中的application.yaml文件
@@ -43,6 +48,7 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 
 	r, err := zip.OpenReader(jarFile)
 	if err != nil {
+		fmt.Errorf("fail to open", jarFile, err)
 		return application, err
 	}
 	defer r.Close()
@@ -61,10 +67,17 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 			}
 
 			err = yaml.Unmarshal(yamlFile, application)
-			return application, err
+			if err != nil{
+				return application, err
+			}
+
+			_, err = application.GetApplicationName()
+			if err == nil{
+				return application, err
+			}
 		}
 	}
-	return application, nil
+	return application, fmt.Errorf("fail to find application name when scan yaml" , jarFile)
 }
 
 // func TestYaml() {

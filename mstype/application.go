@@ -1,5 +1,9 @@
 package mstype
 
+import (
+	"fmt"
+)
+
 type Application struct {
 	Server ServerConfig `yaml:"server"`
 	Spring SpringConfig `yaml:"spring"`
@@ -45,4 +49,14 @@ type DubboConfig struct {
 
 type RegistryConfig struct {
 	Address string `yaml:"address"`
+}
+
+func (application Application) GetApplicationName()(string, error){
+	if(len(application.Spring.Application.Name) != 0){
+		return application.Spring.Application.Name,nil
+	}
+	if(len(application.Dubbo.Application.Name) != 0){
+		return application.Dubbo.Application.Name,nil
+	}
+	return "", fmt.Errorf("Application Name not Found")
 }

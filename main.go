@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	// fileHandler "microsegement/pkg/fileHandler"
-	fileHandler "microsegement/fileHandler"
+	"microsegement/fileHandler"
 )
 
 
@@ -13,7 +13,10 @@ func main() {
 
 	// fileHandler.ListJarFile(myfolder)
 	// fileHandler.TestYaml()
-	fileHandler.ListJarFile(myfolder)
+	list, _ := fileHandler.ListDeploymentFlie(myfolder)
+	for _, v := range list{
+		fmt.Println(*v)
+	}
 
 	fmt.Println("hello world")
 

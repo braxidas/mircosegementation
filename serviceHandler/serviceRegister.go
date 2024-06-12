@@ -1,0 +1,39 @@
+package serviceHandler
+
+import(
+	"microsegement/fileHandler"
+	"microsegement/mstype"
+)
+
+func RegisterService(folder string)([]*mstype.K8sService, error){
+	var k8sServiceList []*mstype.K8sService
+
+	applicationList,pathList,err := fileHandler.ListJarFile(folder)
+	if(err != nil){
+		return k8sServiceList,err
+	}
+
+	deploymentList, err := fileHandler.ListDeploymentFlie(folder)
+	if(err != nil){
+		return k8sServiceList,err
+	}
+
+
+	var k8sService *mstype.K8sService
+	for i, _:= range  pathList{
+
+		k8sService.PodName = deploymentList[i].Metadata.Name
+		k8sService.FilePath = pathList[i]
+		k8sService.ApplicationName, err = applicationList[i].GetApplicationName()
+		if(err != nil){
+			return k8sServiceList,err
+		}
+		k8sServiceList = append(k8sServiceList, k8sService)
+	}
+	return k8sServiceList, nil
+}
+
+func DiscoverService(){
+	
+}
+
