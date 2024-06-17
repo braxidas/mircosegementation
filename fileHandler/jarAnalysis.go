@@ -33,13 +33,15 @@ func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
 
 			// fmt.Println(path)
 			pathList = append(pathList, path)
-			// fmt.Println(*application)
 			applicationList = append(applicationList, application)
 
 		}
 		return nil
 	})
-	return applicationList,pathList,err
+	if err != nil{
+		fmt.Println(err)
+	}
+	return applicationList,pathList,nil
 }
 
 // 获得指定jar包中的application.yaml文件
@@ -73,11 +75,12 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 
 			_, err = application.GetApplicationName()
 			if err == nil{
-				return application, err
+				return application, nil
 			}
 		}
 	}
-	return application, fmt.Errorf("fail to find application name when scan yaml" , jarFile)
+	fmt.Println("fail to find application name when scan yaml" , jarFile)
+	return application, nil
 }
 
 // func TestYaml() {

@@ -21,7 +21,7 @@ func (k8sService *K8sService) AppendIngress(ingress *K8sService){
 }
 
 func (k8sService *K8sService) AppendEgress(egress *K8sService){
-	k8sService.Ingress = append(k8sService.Egress, egress)
+	k8sService.Egress = append(k8sService.Egress, egress)
 }
 
 func (k8sService *K8sService) ProvideService(dubboReference string) bool{

@@ -2,14 +2,17 @@ package serviceHandler
 
 import (
 	"fmt"
+	"microsegement/fileHandler"
 	"microsegement/mstype"
 	"microsegement/soot"
+	"sort"
 	"strings"
 )
 
+
 func DiscoverService(k8sServiceList []*mstype.K8sService)error{
 	for i, _:= range(k8sServiceList){		
-		strList, err := soot.DiscoverService(k8sServiceList[i].ApplicationName)
+		strList, err := soot.ScanDiscoverService(k8sServiceList[i].FilePath)
 		if err != nil{
 			fmt.Println(err)
 			continue
@@ -21,6 +24,13 @@ func DiscoverService(k8sServiceList []*mstype.K8sService)error{
 	}
 
 	analysisCall(k8sServiceList)
+
+	for _, v:= range(k8sServiceList){
+		err := fileHandler.WriteToJson(v)
+		if err != nil{
+			return err
+		}
+	}
 
 	return nil
 }
@@ -35,6 +45,9 @@ func analysisStdOut(strList []string, k8sService *mstype.K8sService){
 			k8sService.DubboService = append(k8sService.DubboService, (strings.Split(v, ":"))[1])
 		}
 	}
+	k8sService.Consume = removeDuplicates(k8sService.Consume)
+	k8sService.DubboReference = removeDuplicates(k8sService.DubboReference)
+	k8sService.DubboService = removeDuplicates(k8sService.DubboService)
 }
 
 func analysisCall(k8sServiceList []*mstype.K8sService){
@@ -60,5 +73,20 @@ func analysisCall(k8sServiceList []*mstype.K8sService){
 			}
 		}
 	}
+}
+
+func removeDuplicates(elements []string) []string {
+	if(len(elements)<2){
+		return elements
+	}
+    sort.Strings(elements) // 先对字符串数组进行排序
+    j := 0
+    for i := 1; i < len(elements); i++ {
+        if elements[i] != elements[j] {
+            j++
+            elements[j] = elements[i]
+        }
+    }
+    return elements[:j+1]
 }
 

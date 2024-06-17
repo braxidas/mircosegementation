@@ -1,6 +1,7 @@
 package serviceHandler
 
-import(
+import (
+	"fmt"
 	"microsegement/fileHandler"
 	"microsegement/mstype"
 )
@@ -10,7 +11,7 @@ func RegisterService(folder string)([]*mstype.K8sService, error){
 
 	applicationList,pathList,err := fileHandler.ListJarFile(folder)
 	if(err != nil){
-		return k8sServiceList,err
+		fmt.Println(err)
 	}
 
 	deploymentList, err := fileHandler.ListDeploymentFile(folder)
@@ -24,7 +25,7 @@ func RegisterService(folder string)([]*mstype.K8sService, error){
 		k8sService.FilePath = pathList[i]
 		k8sService.ApplicationName, err = applicationList[i].GetApplicationName()
 		if(err != nil){
-			return k8sServiceList,err
+			fmt.Println(err, pathList)
 		}
 		k8sServiceList = append(k8sServiceList, k8sService)
 	}
