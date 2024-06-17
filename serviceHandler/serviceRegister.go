@@ -13,15 +13,13 @@ func RegisterService(folder string)([]*mstype.K8sService, error){
 		return k8sServiceList,err
 	}
 
-	deploymentList, err := fileHandler.ListDeploymentFlie(folder)
+	deploymentList, err := fileHandler.ListDeploymentFile(folder)
 	if(err != nil){
 		return k8sServiceList,err
 	}
-
-
-	var k8sService *mstype.K8sService
+	
 	for i, _:= range  pathList{
-
+		k8sService := new(mstype.K8sService)
 		k8sService.PodName = deploymentList[i].Metadata.Name
 		k8sService.FilePath = pathList[i]
 		k8sService.ApplicationName, err = applicationList[i].GetApplicationName()
@@ -31,9 +29,5 @@ func RegisterService(folder string)([]*mstype.K8sService, error){
 		k8sServiceList = append(k8sServiceList, k8sService)
 	}
 	return k8sServiceList, nil
-}
-
-func DiscoverService(){
-	
 }
 

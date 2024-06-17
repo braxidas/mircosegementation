@@ -11,7 +11,7 @@ import (
 )
 
 //获得folder文件夹下所有部署yaml文件
-func ListDeploymentFlie(folder string)([]*mstype.Yaml2Go, error){
+func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 
 	var (
 		deploymentList []*mstype.Yaml2Go
@@ -55,6 +55,5 @@ func getK8sYamlFile(yamlFilePath string)(*mstype.Yaml2Go, error){
 	if deployment.ApiVersion == "" && deployment.Kind == ""  {
 		return deployment,fmt.Errorf("missing required fields")
 	}
-	
 	return deployment, nil
 }

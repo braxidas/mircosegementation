@@ -24,15 +24,15 @@ func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
 		if err != nil {
 			return err
 		}
+		
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".jar") {
-			// fmt.Println(path)
-			pathList = append(pathList, path)
-
 			application, err := getJarYamlFile(path)
 			if err != nil {
 				return err
 			}
 
+			// fmt.Println(path)
+			pathList = append(pathList, path)
 			// fmt.Println(*application)
 			applicationList = append(applicationList, application)
 

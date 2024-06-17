@@ -6,8 +6,14 @@ type K8sService struct {
 	ApplicationName string
 	PodName         string
 	ServiceName     string
+	
 	Ingress         []*K8sService
 	Egress          []*K8sService
+
+	Consume         []string
+	DubboReference  []string
+	DubboService    []string
+
 }
 
 func (k8sService *K8sService) AppendIngress(ingress *K8sService){
@@ -16,4 +22,13 @@ func (k8sService *K8sService) AppendIngress(ingress *K8sService){
 
 func (k8sService *K8sService) AppendEgress(egress *K8sService){
 	k8sService.Ingress = append(k8sService.Egress, egress)
+}
+
+func (k8sService *K8sService) ProvideService(dubboReference string) bool{
+	for _, v := range(k8sService.DubboService){
+		if dubboReference == v {
+			return true
+		}
+	}
+	return false
 }
