@@ -44,7 +44,7 @@ func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
 	return applicationList,pathList,nil
 }
 
-// 获得指定jar包中的application.yaml文件
+// 获得指定jar包中的a配置yaml文件
 func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 	application := new(mstype.Application)
 

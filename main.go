@@ -12,6 +12,10 @@ import (
 func main() {
 
 	// myfolder := `C:\Users\li_sh\Desktop\msexample\example\0ruoyiExample`
+	if len(os.Args) < 2{
+		fmt.Println("please input path to scan")
+		return
+	}
 	myfolder := os.Args[1]
 	fmt.Println("start to scan",myfolder)
 
@@ -21,7 +25,7 @@ func main() {
 	}
 	err = serviceHandler.DiscoverService(k8sServiceList)
 	if err != nil{
-		fmt.Println("fail to service register%v\n", err)
+		fmt.Println("fail to service discoverr%v\n", err)
 	}
 	fmt.Println("finish scan",myfolder)
 

@@ -19,3 +19,5 @@ golang1.21
             - ruo-system-file
                 - ruo-system-file.jar
                 - ruoyi-deployment.yaml
+# 输出
+在output文件夹下生成network=policy的json文件

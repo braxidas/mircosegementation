@@ -15,6 +15,10 @@ func WriteToJson(k8sService *mstype.K8sService) error{
 
 	jsonData, err := json.MarshalIndent(manifest, "", " ")
 
+	if k8sService.PodName == ""{
+		return nil
+	}
+
 	if err != nil {
 		return fmt.Errorf("failed to marshal TCPManifest for service '%s': %w", k8sService.PodName, err)
 	}

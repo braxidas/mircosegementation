@@ -25,7 +25,7 @@ func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 			// conf, serviceName, err := parser.ParseYaml(path)
 			deployment, err := getK8sYamlFile(path)
 			if err != nil {
-				return err
+				fmt.Printf("no valid deployment ymal in %s ,because %v \n", path, err)
 			}
 			// fmt.Println(path)
 			deploymentList = append(deploymentList, deployment)

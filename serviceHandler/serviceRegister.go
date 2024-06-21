@@ -25,7 +25,7 @@ func RegisterService(folder string)([]*mstype.K8sService, error){
 		k8sService.FilePath = pathList[i]
 		k8sService.ApplicationName, err = applicationList[i].GetApplicationName()
 		if(err != nil){
-			fmt.Println(err, pathList)
+			fmt.Println(err, pathList[i])
 		}
 		k8sServiceList = append(k8sServiceList, k8sService)
 	}

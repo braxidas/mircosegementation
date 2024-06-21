@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/main.go",
-            "args":""
+            "args":"C:\\Users\\li_sh\\Desktop\\msexample\\example\\0ruoyiExample",
         }
     ]
 }
