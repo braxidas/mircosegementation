@@ -31,7 +31,7 @@ func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
 				return err
 			}
 
-			// fmt.Println(path)
+			// fmt.Println("\\\\\\\\\\\\\\\\"+getParentDirectory(path))
 			pathList = append(pathList, path)
 			applicationList = append(applicationList, application)
 
@@ -79,9 +79,16 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 			}
 		}
 	}
-	fmt.Println("fail to find application name when scan yaml" , jarFile)
+	// fmt.Println("fail to find application name when scan yaml" , jarFile)
 	return application, nil
 }
+
+//获得jar包上级目录
+func getParentDirectory(path string) string {
+	separator := string(os.PathSeparator)
+	return path[0:strings.LastIndex(path, separator)]
+}
+
 
 // func TestYaml() {
 // 	application := new(mstype.Application)

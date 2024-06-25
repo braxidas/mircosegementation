@@ -57,7 +57,7 @@ func analysisStdOut(strList []string, k8sService *mstype.K8sService) {
 	k8sService.Consume = removeDuplicates(k8sService.Consume)
 	k8sService.DubboReference = removeDuplicates(k8sService.DubboReference)
 	k8sService.DubboService = removeDuplicates(k8sService.DubboService)
-	k8sService.JavaInterface = removeDuplicates(k8sService.JavaInterface)
+	// k8sService.JavaInterface = removeDuplicates(k8sService.JavaInterface)
 }
 
 // maybe optimize
