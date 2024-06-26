@@ -1,0 +1,18 @@
+{
+ "service": "ruoyi-system",
+ "version": "v1",
+ "requests": [
+  {
+   "type": "Tcp",
+   "url": "",
+   "name": "ruoyi-system",
+   "port": ""
+  },
+  {
+   "type": "Tcp",
+   "url": "",
+   "name": "ruoyi-file",
+   "port": ""
+  }
+ ]
+}

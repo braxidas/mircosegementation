@@ -15,6 +15,7 @@ func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 	var (
 		deploymentList []*mstype.Yaml2Go
 	)
+	folder = getParentDirectory(folder)//获得上级路径
 
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
