@@ -1,5 +1,12 @@
 package mstype
 
+
+
+
+/*
+此类用于分析每一个微服务的部署文件
+*/
+
 // Containers represents a collection of containers in a configuration.
 type Containers struct {
 	Env            []Env          `yaml:"env"`            // Environment variables for the containers.

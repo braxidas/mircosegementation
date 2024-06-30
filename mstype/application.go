@@ -3,7 +3,9 @@ package mstype
 import (
 	"fmt"
 )
-
+/*
+此类用于描述一个微服务的的配置文件
+*/
 type Application struct {
 	Server ServerConfig `yaml:"server"`
 	Spring SpringConfig `yaml:"spring"`

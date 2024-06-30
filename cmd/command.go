@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 		fmt.Println("start to scan",myfolder)
 		fmt.Println("------------------------------------------")
 
-		k8sServiceList, err := serviceHandler.RegisterService(myfolder)
+		k8sServiceList, err := serviceHandler.RegisterService(myfolder, "")
 		if err != nil{
 			fmt.Println("fail to service register%v\n", err)
 		}

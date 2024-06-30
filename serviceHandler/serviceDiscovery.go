@@ -10,16 +10,16 @@ import (
 
 var (
 	// class2service map[string][]*mstype.K8sService //通过类取得其调用的服务
-	class2Service	map[string]*mstype.K8sService //通过类名取得使用该类的微服务
+	// class2Service	map[string]*mstype.K8sService //通过类名取得使用该类的微服务
 	aspect2Class map[string]*mstype.JavaClass    //通过切面获得定义该切面的类
-	name2JavaClass map[string]*mstype.JavaClass	//通过类名获得其类信息
+	name2JavaClass map[string]*mstype.JavaClass	//通过类名获得其类信息//如果类名存在于key中则表示是自定义类
 	graph         mstype.Graph                    //每个类之间的调用关系图
 )
 
 func DiscoverService(k8sServiceList []*mstype.K8sService) error {
 
 	// class2service = make(map[string][]*mstype.K8sService)
-	class2Service =	make(map[string]*mstype.K8sService)
+	// class2Service =	make(map[string]*mstype.K8sService)
 
 	for i, _ := range k8sServiceList {
 		javaClassList, err := soot.ScanDiscoverService(k8sServiceList[i].FilePath)
@@ -32,7 +32,8 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) error {
 		}
 		k8sServiceList[i].JavaClassList = javaClassList
 		for _, v := range k8sServiceList[i].JavaClassList{//建议类名和使用该类的微服务的索引
-			class2Service[v.ClassName] = k8sServiceList[i]
+			// class2Service[v.ClassName] = k8sServiceList[i]
+			v.K8sService = k8sServiceList[i]
 		}
 	}
 
@@ -94,10 +95,10 @@ func analysisDubboCall(k8sServiceList []*mstype.K8sService) {
 func analysisCallGraph(k8sServiceList []*mstype.K8sService) {
 	buildGraph(k8sServiceList)
 	for _, vn := range graph.Nodes{
-		svc, ok := class2Service[vn.Value]//若该节点的类被模块使用，则有必要检查其可达节点
+		vc, ok := name2JavaClass[vn.Value]//若该节点的类被模块使用，则有必要检查其可达节点
 		if ok{
 			graph.Reachable(vn, func(node *mstype.Node) {
-				svc.JavaClassAllList = append(svc.JavaClassAllList, node.Value)
+				vc.K8sService.JavaClassAllList = append(vc.K8sService.JavaClassAllList, node.Value)
 			})
 		}
 	}
