@@ -17,6 +17,18 @@ spec:
           to:
             - ipBlock:
                 cidr: 192.168.1.41/32
+        - ports:
+            - port: 9000
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 8.129.231.12/32
+        - ports:
+            - port: 22122
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 8.129.231.12/32
     ingress:
         - ports:
             - port: 9300
@@ -25,4 +37,4 @@ spec:
             app: ruoyi-file
     policyTypes:
         - Egress
-        - Igress
+        - Ingress

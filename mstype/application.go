@@ -11,6 +11,8 @@ type Application struct {
 	Server ServerConfig `yaml:"server"`
 	Spring SpringConfig `yaml:"spring"`
 	Dubbo  DubboConfig  `yaml:"dubbo"`
+	Fdfs   FdfsConfig   `yaml:"fdfs"`
+	Minio  MinioConfig  `yaml:"minio"`
 }
 
 // #
@@ -23,7 +25,7 @@ type SpringConfig struct {
 	Application ApplicationConfig `yaml:"application"`
 	Cloud       CloudConfig       `yaml:"cloud"`
 	Redis       RedisConfig       `yaml:"redis"`
-	DataSource DataSourceConfig `taml:"datasource"`
+	DataSource  DataSourceConfig  `taml:"datasource"`
 }
 
 // ##
@@ -35,14 +37,15 @@ type ApplicationConfig struct {
 type CloudConfig struct {
 	Nacos NacosConfig `yaml:"nacos"`
 }
+
 // ##
 type RedisConfig struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
 }
-type DataSourceConfig struct{
-	Url string `yaml:"url"`
-	Dynamic DynamicConfig 	`yaml:"dynamic"`
+type DataSourceConfig struct {
+	Url     string        `yaml:"url"`
+	Dynamic DynamicConfig `yaml:"dynamic"`
 }
 
 // ###
@@ -50,14 +53,16 @@ type NacosConfig struct {
 	Discovery DiscoveryConfig `yaml:"discovery"`
 	Config    ConfigConfig    `yaml:"config"`
 }
-//### 
-type DynamicConfig struct{
+
+// ###
+type DynamicConfig struct {
 	DataSource DataSourceLiConfig `yaml:"datasource"`
 }
-//####
-type DataSourceLiConfig struct{
+
+// ####
+type DataSourceLiConfig struct {
 	Master DataSourceElemConfig `yaml:"master"`
-	Slave DataSourceElemConfig `yaml:"slave"`
+	Slave  DataSourceElemConfig `yaml:"slave"`
 }
 
 // ####
@@ -68,8 +73,9 @@ type ConfigConfig struct {
 	ServerAddr string `yaml:"server-addr"`
 	Group      string `yaml:"group"`
 }
-//#####
-type DataSourceElemConfig struct{
+
+// #####
+type DataSourceElemConfig struct {
 	Url string `yaml:"url"`
 }
 
@@ -83,9 +89,16 @@ type RegistryConfig struct {
 	Address string `yaml:"address"`
 }
 
+// #
+type FdfsConfig struct {
+	Domain      string `yaml:"domain"`
+	TrackerList string `yaml:"trackerList"`
+}
 
-
-
+// #
+type MinioConfig struct {
+	Url string `yaml:"url"`
+}
 
 func (application Application) GetApplicationName() (string, error) {
 	if len(application.Spring.Application.Name) != 0 {
@@ -96,4 +109,3 @@ func (application Application) GetApplicationName() (string, error) {
 	}
 	return "", fmt.Errorf("Application Name not Found")
 }
-

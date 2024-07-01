@@ -31,4 +31,4 @@ spec:
             app: ruoyi-auth
     policyTypes:
         - Egress
-        - Igress
+        - Ingress

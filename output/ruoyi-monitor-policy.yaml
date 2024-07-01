@@ -25,4 +25,4 @@ spec:
             app: ruoyi-monitor
     policyTypes:
         - Egress
-        - Igress
+        - Ingress

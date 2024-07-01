@@ -37,4 +37,4 @@ spec:
             app: ruoyi-gen
     policyTypes:
         - Egress
-        - Igress
+        - Ingress

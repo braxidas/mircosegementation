@@ -37,4 +37,4 @@ spec:
             app: ruoyi-job
     policyTypes:
         - Egress
-        - Igress
+        - Ingress

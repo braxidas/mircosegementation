@@ -22,7 +22,7 @@ func GenerateIpPolicy(k8sServiceList []*mstype.K8sService) []*mstype.NetworkPoli
 		networkPolicy.Spec.Egress = v.EgressOut
 		networkPolicy.Spec.Ingress = v.IngressOut
 		networkPolicy.Spec.PodSelector.MatchLabels.App = v.PodName
-		networkPolicy.Spec.PolicyTypes = []string{"Egress", "Igress"}
+		networkPolicy.Spec.PolicyTypes = []string{"Egress", "Ingress"}
 		result = append(result, networkPolicy)
 		fileHandler.WriteToYaml(networkPolicy)//写成yaml文件
 	}
@@ -73,16 +73,28 @@ func handleEgress(application *mstype.Application)[]*mstype.Policy{
 	}
 	//Database
 	if application.Spring.DataSource.Url != ""{
-		host, portStr := getHostPort(application.Spring.DataSource.Url)
+		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Url,"jdbc:",""))
 		port, _ := strconv.Atoi(portStr)
 		egress = append(egress, mstype.NewEgress(port, host))
 	}
 	if application.Spring.DataSource.Dynamic.DataSource.Master.Url != ""{
-		host, portStr := getHostPort(application.Spring.DataSource.Dynamic.DataSource.Master.Url)
+		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Dynamic.DataSource.Master.Url,"jdbc:",""))
 		port, _ := strconv.Atoi(portStr)
 		egress = append(egress, mstype.NewEgress(port, host))
 	}
-	//
+	// Minio
+	if application.Minio.Url != ""{
+		host, portStr := getHostPort(application.Minio.Url)
+		port, _ := strconv.Atoi(portStr)
+		egress = append(egress, mstype.NewEgress(port, host))
+	}
+	//Fdfs
+	if application.Fdfs.Domain != ""{
+		host, _ := getHostPort(application.Fdfs.Domain)
+		portStr := strings.Split(application.Fdfs.TrackerList,":")[1]
+		port, _ := strconv.Atoi(portStr)
+		egress = append(egress, mstype.NewEgress(port, host))
+	}
 	return egress
 }
 func handleIngress(application *mstype.Application)[]*mstype.Policy{
@@ -95,7 +107,7 @@ func handleIngress(application *mstype.Application)[]*mstype.Policy{
 }
 
 func getHostPort(urlstr string)(string,string){
-	urlstr = strings.ReplaceAll(urlstr,"jdbc:","")
+	// urlstr = strings.ReplaceAll(urlstr,"jdbc:","")
 	u, err := url.Parse(urlstr)
 	if err != nil{
 		fmt.Println("wrong parser", urlstr, err.Error())
