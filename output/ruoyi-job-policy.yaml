@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: ruoyi-job-policy
+    namespace: default
+spec:
+    egress:
+        - ports:
+            - port: 8848
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 192.168.1.41/32
+        - ports:
+            - port: 9848
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 192.168.1.41/32
+        - ports:
+            - port: 16379
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 192.168.1.134/32
+        - ports:
+            - port: 3306
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 192.168.1.134/32
+    ingress:
+        - ports:
+            - port: 9203
+    podSelector:
+        matchLabels:
+            app: ruoyi-job
+    policyTypes:
+        - Egress
+        - Igress

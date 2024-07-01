@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//根据nacos的文件路径和service的app名查找相关配置文件
+//根据nacos的文件路径和service的app名查找相关配置文件,并修改k8sService的applicationList
 func ListNacosYamlFile(folder string, k8sService *mstype.K8sService) (error) {
 	if folder == ""{
 		return nil
@@ -23,7 +23,7 @@ func ListNacosYamlFile(folder string, k8sService *mstype.K8sService) (error) {
 			return err
 		}
 
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".yaml") && strings.Contains(info.Name(), k8sService.ApplicationName){
+		if !info.IsDir() && (strings.HasSuffix(info.Name(), ".yml") || strings.HasSuffix(info.Name(), ".yaml")) && strings.Contains(info.Name(), k8sService.ApplicationName){
 			// conf, serviceName, err := parser.ParseYaml(path)
 			application, err := getNacosConfig(path)
 			if err != nil {
@@ -37,15 +37,7 @@ func ListNacosYamlFile(folder string, k8sService *mstype.K8sService) (error) {
 	return err
 }
 
-//获得配置yaml文件中的ipblock信息
-/*
-Egress
-	nacos注册中心地址
-	nacos服务器上export的配置文件中的ip地址
-Ingress
-	jar包中的server.port表示对外暴露的端口
 
-*/
 func getNacosConfig(configPath string)(*mstype.Application, error){
 	application := new(mstype.Application)
 	yamlFile, err := os.ReadFile(configPath)

@@ -29,7 +29,7 @@ type K8sService struct {
 								//用string是因为实际应用的类不一定是自定义类，如redisService，为了之后可能有非自定义类需要分析，所以保留
 
 	ApplicationList []*Application //用于表示k8sService的配置文件列表
-	OutPortList []*Policy  //该service需要使用的外部端口
+	// OutPortList []*Policy  //该service需要使用的外部端口,使用policy构成一部分
 	// //spring cloud逻辑
 	// Consume       []string //消费的服务
 	// JavaInterface []string //使用的interface(interface使用的服务也要记录)

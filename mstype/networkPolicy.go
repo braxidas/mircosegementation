@@ -42,7 +42,7 @@ type Policy struct{
 }
 type TargetPort struct{
 	Port int `yaml:"port,omitempty"`
-	Protocol string `yaml:"protocol"`
+	Protocol string `yaml:"protocol,omitempty"`
 }
 type TargetTo struct{
 	Ipblock IpBlock `yaml:"ipBlock,omitempty"`
@@ -50,4 +50,16 @@ type TargetTo struct{
 }
 type IpBlock struct{
 	Cidr string `yaml:"cidr,omitempty"`
+}
+
+func NewEgress(port int, url string )*Policy{
+	policy := new(Policy)
+	policy.Ports = []TargetPort{TargetPort{Port:port, Protocol:"TCP"}}
+	policy.To = []TargetTo{TargetTo{Ipblock:IpBlock{Cidr:url+`/32`}}}
+	return policy
+}
+func NewIngress(port int)*Policy{
+	policy := new(Policy)
+	policy.Ports = []TargetPort{TargetPort{Port:port}}
+	return policy
 }

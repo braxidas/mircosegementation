@@ -16,7 +16,7 @@ var (
 	graph         mstype.Graph                    //每个类之间的调用关系图
 )
 
-func DiscoverService(k8sServiceList []*mstype.K8sService) error {
+func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,error) {
 
 	// class2service = make(map[string][]*mstype.K8sService)
 	// class2Service =	make(map[string]*mstype.K8sService)
@@ -44,11 +44,11 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) error {
 	for _, v := range k8sServiceList {
 		err := fileHandler.WriteToJson(v)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
 	}
 
-	return nil
+	return k8sServiceList,nil
 }
 
 // 扫描直接调用微服务

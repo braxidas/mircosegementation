@@ -56,7 +56,7 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 	defer r.Close()
 
 	for _, f := range r.File {
-		if strings.HasSuffix(f.Name, ".yml") {
+		if strings.HasSuffix(f.Name, ".yml") || strings.HasSuffix(f.Name, ".yaml") {
 			rc, err := f.Open()
 			if err != nil {
 				return application, err

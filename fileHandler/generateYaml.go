@@ -18,7 +18,7 @@ func WriteToYaml(networkPolicy *mstype.NetworkPolicy) error {
 		return fmt.Errorf("fail to marshal " + networkPolicy.Metadata.Name)
 	}
 
-	filename := filepath.Join("output", networkPolicy.Metadata.Name+"-policy.yaml")
+	filename := filepath.Join("output", networkPolicy.Metadata.Name+".yaml")
 	err = os.WriteFile(filename, yamlData, 0777)
 
 	if err != nil {

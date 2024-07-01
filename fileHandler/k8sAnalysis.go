@@ -22,7 +22,7 @@ func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 			return err
 		}
 
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".yaml") {
+		if !info.IsDir() &&  (strings.HasSuffix(info.Name(), ".yml") || strings.HasSuffix(info.Name(), ".yaml")) {
 			// conf, serviceName, err := parser.ParseYaml(path)
 			deployment, err := getK8sYamlFile(path)
 			if err != nil {

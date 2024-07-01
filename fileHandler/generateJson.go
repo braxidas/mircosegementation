@@ -37,6 +37,7 @@ func ServicetoManifest(k8sService *mstype.K8sService) mstype.TCPManifest{
 	var manifest mstype.TCPManifest
 	manifest.Service = k8sService.PodName
 	manifest.Version = "v1"
+	manifest.Requests = []mstype.TCPRequest{}
 	for k, _ := range(k8sService.Egress){
 		var request mstype.TCPRequest
 		request.Name = k.PodName
