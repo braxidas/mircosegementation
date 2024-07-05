@@ -18,11 +18,11 @@ func init(){
 	cobra.OnInitialize(initConfig)
 	//如果未设置 则configScan为""
 	//带p则5个参数，不带p则4个参数
-	rootCmd.PersistentFlags().StringVarP(&configScan, "configScan","c","","if need to scan extra config files, input their path")
+	// rootCmd.PersistentFlags().StringVarP(&configScan, "configScan","c","","if need to scan extra config files, input their path")
 }
 
 func initConfig(){
-	viper.BindPFlag("configScan", rootCmd.PersistentFlags().Lookup("configScan"))
+	// viper.BindPFlag("configScan", rootCmd.PersistentFlags().Lookup("configScan"))
 }
 
 var rootCmd = &cobra.Command{
@@ -35,7 +35,8 @@ var rootCmd = &cobra.Command{
 		fmt.Println("------------------------------------------")
 
 		//扫描jar包，deployment文件，配置文件 获得微服务的基础信息
-		k8sServiceList, err := serviceHandler.RegisterService(myfolder, viper.GetString("configScan"))
+		// k8sServiceList, err := serviceHandler.RegisterService(myfolder, viper.GetString("configScan"))
+		k8sServiceList, err := serviceHandler.RegisterService(myfolder, "nacos_yaml")
 		fmt.Println("scan config:___", viper.GetString("configScan"),"___")
 		if err != nil{
 			log.Fatalf("fail to service register %v\n", err)
