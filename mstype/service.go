@@ -20,8 +20,8 @@ type K8sService struct {
 	Ingress map[*K8sService]struct{} //networkpolicy的ingress集合 针对nacos中的微服务
 	Egress  map[*K8sService]struct{} //networkpolicy的egress列表	针对nacos中的微服务
 
-	IngressOut []*Policy	//networkpolicy的ingress集合	针对外部组件的ip
-	EgressOut []*Policy	//networkpolicy的egress列表	针对外部组件的ip
+	IngressOut []*Policy	//networkpolicy的ingress集合	包括外部组件的ip
+	EgressOut []*Policy	//networkpolicy的egress列表	包括外部组件的ip
 
 
 	JavaClassList    []*JavaClass //soot扫描到的该服务中直接定义的类

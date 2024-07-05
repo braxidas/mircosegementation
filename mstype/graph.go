@@ -4,7 +4,7 @@ import "fmt"
 
 
 /*
-此类用于分析服务间的类调用关系
+此类用于构造图分析服务间的类调用关系
 */
 type Node struct {
 	Value string//节点 通过类名表示  原因是并非所有类都是模块中自定义的，比如redisService之类的，但这些类可能有用，但没有指针

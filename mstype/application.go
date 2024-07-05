@@ -36,6 +36,7 @@ type ApplicationConfig struct {
 // ##
 type CloudConfig struct {
 	Nacos NacosConfig `yaml:"nacos"`
+	Gateway GatewayConfig `yaml:"gateway"`
 }
 
 // ##
@@ -54,10 +55,21 @@ type NacosConfig struct {
 	Config    ConfigConfig    `yaml:"config"`
 }
 
+type GatewayConfig struct{
+	Routes []*RouteConfig `yaml:"routes"`
+}
+
 // ###
 type DynamicConfig struct {
 	DataSource DataSourceLiConfig `yaml:"datasource"`
 }
+
+// ####
+type RouteConfig struct{
+	Id string `yaml:"id"`
+	Uri string  `yaml:"uri"`
+}
+
 
 // ####
 type DataSourceLiConfig struct {

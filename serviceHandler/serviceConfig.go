@@ -95,6 +95,14 @@ func handleEgress(application *mstype.Application)[]*mstype.Policy{
 		port, _ := strconv.Atoi(portStr)
 		egress = append(egress, mstype.NewEgress(port, host))
 	}
+	//spring.cloud.gateway.routes
+	if len(application.Spring.Cloud.Gateway.Routes) > 0{
+		for _, v := range application.Spring.Cloud.Gateway.Routes{
+			if vs, ok := name2K8sService[getUriName(v.Uri)]; ok{
+				egress = append(egress, mstype.NewPodPolicy(vs.PodName))
+			}
+		}	
+	}
 	return egress
 }
 func handleIngress(application *mstype.Application)[]*mstype.Policy{
@@ -105,7 +113,7 @@ func handleIngress(application *mstype.Application)[]*mstype.Policy{
 	}
 	return ingress
 }
-
+//从url中获得端口和ip
 func getHostPort(urlstr string)(string,string){
 	// urlstr = strings.ReplaceAll(urlstr,"jdbc:","")
 	u, err := url.Parse(urlstr)
@@ -114,3 +122,8 @@ func getHostPort(urlstr string)(string,string){
 	}
 	return u.Hostname(), u.Port()
 }
+//从uri中获得服务名称
+func getUriName(uri string)(string){
+	return strings.ReplaceAll(uri,"lb://", "")
+}
+

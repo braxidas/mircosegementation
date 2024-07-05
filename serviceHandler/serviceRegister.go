@@ -37,7 +37,7 @@ func RegisterService(folder string, nacosFolder string) ([]*mstype.K8sService, e
 		}
 		if len(deploymentList) > 0 {//有deployment文件的情况
 			// k8sService.PodName = deploymentList[0].Spec.Template.Metadata.Labels.App
-			k8sService.PodName = deploymentList[0].Metadata.Name
+			k8sService.PodName = deploymentList[0].Spec.Template.Metadata.Labels.App
 			name2K8sService[k8sService.ApplicationName] = k8sService
 			
 		} else {
