@@ -54,20 +54,20 @@ type IpBlock struct{
 //根据外部ip生成egress
 func NewEgress(port int, url string )*Policy{
 	policy := new(Policy)
-	policy.Ports = []TargetPort{TargetPort{Port:port, Protocol:"TCP"}}
-	policy.To = []TargetTo{TargetTo{Ipblock:IpBlock{Cidr:url+`/32`}}}
+	policy.Ports = []TargetPort{{Port:port, Protocol:"TCP"}}
+	policy.To = []TargetTo{{Ipblock:IpBlock{Cidr:url+`/32`}}}
 	return policy
 }
 //根据port参数生成ingress
 func NewIngress(port int)*Policy{
 	policy := new(Policy)
-	policy.Ports = []TargetPort{TargetPort{Port:port}}
+	policy.Ports = []TargetPort{{Port:port}}
 	return policy
 }
 //根据pod名生成策略
 func NewPodPolicy(podName string)*Policy{
 	policy := new(Policy)
-	policy.To = []TargetTo{TargetTo{PodSelector:PodSelector{MatchLabels: MatchLabels{App: podName}} }}
+	policy.To = []TargetTo{{PodSelector:PodSelector{MatchLabels: MatchLabels{App: podName}} }}
 	return policy
 }
 

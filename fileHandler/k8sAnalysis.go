@@ -44,12 +44,12 @@ func getK8sYamlFile(yamlFilePath string)(*mstype.Yaml2Go, error){
 	deployment := new(mstype.Yaml2Go)
 	yamlFile, err := os.ReadFile(yamlFilePath)
 	if err != nil {
-		return deployment, fmt.Errorf("fail to read ", yamlFilePath, err)
+		return deployment, fmt.Errorf("fail to read %s, because %v ", yamlFilePath, err)
 	}
 
 	err = yaml.Unmarshal(yamlFile, deployment)
 	if err != nil {
-		return deployment, fmt.Errorf("fail to unmarshal ", yamlFilePath, err)
+		return deployment, fmt.Errorf("fail to unmarshal %s, because %v ", yamlFilePath, err)
 	}
 
 	if deployment.ApiVersion == "" && deployment.Kind == ""  {

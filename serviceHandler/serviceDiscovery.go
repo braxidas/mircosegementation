@@ -21,7 +21,7 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 	// class2service = make(map[string][]*mstype.K8sService)
 	// class2Service =	make(map[string]*mstype.K8sService)
 
-	for i, _ := range k8sServiceList {
+	for i := range k8sServiceList {
 		javaClassList, err := soot.ScanDiscoverService(k8sServiceList[i].FilePath)
 		if err != nil {
 			fmt.Println(err)
@@ -48,11 +48,10 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 			fmt.Println(err)
 		}
 		//根据pod名称 向最终的策略文件中添加策略
-		for k, _ := range v.Egress{
+		for k := range v.Egress{
 			v.EgressOut = append(v.EgressOut, mstype.NewPodPolicy(k.PodName))
 		}
-		// 
-		
+		// 		
 	}
 
 	return k8sServiceList,nil
@@ -60,7 +59,7 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 
 // 扫描直接调用微服务
 func analysisDirectCall(k8sServiceList []*mstype.K8sService) {
-	for i, _ := range k8sServiceList { //每个模块
+	for i := range k8sServiceList { //每个模块
 		for _, v := range k8sServiceList[i].JavaClassAllList { //每个类名
 			_, ok1 := name2JavaClass[v] //如果该类为自定义的类
 			if ok1{
@@ -79,12 +78,12 @@ func analysisDirectCall(k8sServiceList []*mstype.K8sService) {
 
 // 扫描dubbo调用微服务
 func analysisDubboCall(k8sServiceList []*mstype.K8sService) {
-	for i, _ := range k8sServiceList { //每个模块
+	for i := range k8sServiceList { //每个模块
 		for _, v := range k8sServiceList[i].JavaClassAllList { //每个类
 			_, ok1 := name2JavaClass[v]
 			if ok1{
 				for _, vd := range name2JavaClass[v].DubboReference { //每个类声明的dubbo远程调用
-					for j, _ := range k8sServiceList {
+					for j := range k8sServiceList {
 						if k8sServiceList[j].ProvideService(vd) {
 							k8sServiceList[i].AppendEgress(k8sServiceList[j])
 							k8sServiceList[j].AppendIngress(k8sServiceList[i])

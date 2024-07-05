@@ -50,8 +50,7 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 
 	r, err := zip.OpenReader(jarFile)
 	if err != nil {
-		fmt.Errorf("fail to open", jarFile, err)
-		return application, err
+		return application, fmt.Errorf("fail to open %s, because %v", jarFile, err)
 	}
 	defer r.Close()
 

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"microsegement/serviceHandler"
 
 	"github.com/spf13/cobra"
@@ -37,12 +38,12 @@ var rootCmd = &cobra.Command{
 		k8sServiceList, err := serviceHandler.RegisterService(myfolder, viper.GetString("configScan"))
 		fmt.Println("scan config:___", viper.GetString("configScan"),"___")
 		if err != nil{
-			fmt.Println("fail to service register%v\n", err)
+			log.Fatalf("fail to service register %v\n", err)
 		}
 		//通过soot分析 获得完整的微服务调用信息
 		k8sServiceList, err = serviceHandler.DiscoverService(k8sServiceList)
 		if err != nil{
-			fmt.Println("fail to service discoverr%v\n", err)
+			log.Fatalf("fail to service discovery %v\n", err)
 		}
 		//分析配置文件 获得完整的微服务调用外部ip的策略并生成策略文件
 		serviceHandler.GenerateIpPolicy(k8sServiceList)

@@ -21,7 +21,7 @@ func RegisterService(folder string, nacosFolder string) ([]*mstype.K8sService, e
 		fmt.Println(err)
 	}
 
-	for i, _ := range pathList {
+	for i := range pathList {
 		k8sService := new(mstype.K8sService)
 		k8sService.Egress = make(map[*mstype.K8sService]struct{})
 		k8sService.Ingress = make(map[*mstype.K8sService]struct{})

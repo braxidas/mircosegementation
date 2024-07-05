@@ -42,11 +42,11 @@ func getNacosConfig(configPath string)(*mstype.Application, error){
 	application := new(mstype.Application)
 	yamlFile, err := os.ReadFile(configPath)
 	if err != nil {
-		return application, fmt.Errorf("fail to read ", configPath, err)
+		return application, fmt.Errorf("fail to read %s,because %v", configPath, err)
 	}
 	err = yaml.Unmarshal(yamlFile, application)
 	if err != nil {
-		return application, fmt.Errorf("fail to unmarshal ", configPath, err)
+		return application, fmt.Errorf("fail to unmarshal %s, because %v ", configPath, err)
 	}
 	return application, nil
 }

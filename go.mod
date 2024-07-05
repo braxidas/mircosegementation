@@ -4,10 +4,7 @@ go 1.22
 
 toolchain go1.22.4
 
-require (
-	github.com/xo/dburl v0.23.2
-	gopkg.in/yaml.v3 v3.0.1
-)
+require gopkg.in/yaml.v3 v3.0.1
 
 require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
