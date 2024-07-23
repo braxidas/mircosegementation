@@ -2,3 +2,6 @@ output
 tempDependency
 tempJar
 __debug*
+microsegement
+.idea/
+vendor/
