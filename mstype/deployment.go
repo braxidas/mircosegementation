@@ -1,8 +1,5 @@
 package mstype
 
-
-
-
 /*
 此类用于分析每一个微服务的部署文件
 */
@@ -53,8 +50,9 @@ type LivenessProbeExec struct {
 
 // Metadata represents the metadata associated with a resource.
 type Metadata struct {
-	Name   string `yaml:"name"`   // Name is the name of the resource.
-	Labels Labels `yaml:"labels"` // Labels are the labels associated with the resource.
+	Name      string `yaml:"name"`   // Name is the name of the resource.
+	Labels    Labels `yaml:"labels"` // Labels are the labels associated with the resource.
+	Namespace string `yaml:"namespace"`
 }
 
 // Ports represents the ports configuration for a container.
@@ -103,6 +101,7 @@ type ServiceInfo struct {
 // Spec represents the specification of a resource.
 type Spec struct {
 	Template Template `yaml:"template"`
+	Selector PodSelector `yaml:"selector"`
 }
 
 // TCPManifest represents the manifest for a TCP service.

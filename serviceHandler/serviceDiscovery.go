@@ -2,7 +2,7 @@ package serviceHandler
 
 import (
 	"fmt"
-	"microsegement/fileHandler"
+	// "microsegement/fileHandler"
 	"microsegement/mstype"
 	"microsegement/soot"
 	"sort"
@@ -11,12 +11,12 @@ import (
 var (
 	// class2service map[string][]*mstype.K8sService //通过类取得其调用的服务
 	// class2Service	map[string]*mstype.K8sService //通过类名取得使用该类的微服务
-	aspect2Class map[string]*mstype.JavaClass    //通过切面获得定义该切面的类
-	name2JavaClass map[string]*mstype.JavaClass	//通过类名获得其类信息//如果类名存在于key中则表示是自定义类
-	graph         mstype.Graph                    //每个类之间的调用关系图
+	aspect2Class   map[string]*mstype.JavaClass //通过切面获得定义该切面的类
+	name2JavaClass map[string]*mstype.JavaClass //通过类名获得其类信息//如果类名存在于key中则表示是自定义类
+	graph          mstype.Graph                 //每个类之间的调用关系图
 )
 
-func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,error) {
+func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService, error) {
 
 	// class2service = make(map[string][]*mstype.K8sService)
 	// class2Service =	make(map[string]*mstype.K8sService)
@@ -31,7 +31,7 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 			continue
 		}
 		k8sServiceList[i].JavaClassList = javaClassList
-		for _, v := range k8sServiceList[i].JavaClassList{//建议类名和使用该类的微服务的索引
+		for _, v := range k8sServiceList[i].JavaClassList { //建议类名和使用该类的微服务的索引
 			// class2Service[v.ClassName] = k8sServiceList[i]
 			v.K8sService = k8sServiceList[i]
 		}
@@ -43,18 +43,18 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 
 	for _, v := range k8sServiceList {
 		//生成json文件
-		err := fileHandler.WriteToJson(v)
-		if err != nil {
-			fmt.Println(err)
-		}
+		// err := fileHandler.WriteToJson(v)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
 		//根据pod名称 向最终的策略文件中添加策略
-		for k := range v.Egress{
-			v.EgressOut = append(v.EgressOut, mstype.NewPodPolicy(k.PodName))
+		for k := range v.Egress {
+			v.EgressOut = append(v.EgressOut, mstype.NewPodPolicy(k.Labels))
 		}
-		// 		
+		//
 	}
 
-	return k8sServiceList,nil
+	return k8sServiceList, nil
 }
 
 // 扫描直接调用微服务
@@ -62,7 +62,7 @@ func analysisDirectCall(k8sServiceList []*mstype.K8sService) {
 	for i := range k8sServiceList { //每个模块
 		for _, v := range k8sServiceList[i].JavaClassAllList { //每个类名
 			_, ok1 := name2JavaClass[v] //如果该类为自定义的类
-			if ok1{
+			if ok1 {
 				for _, vc := range name2JavaClass[v].Consume { //每个类声明的调用
 					ks, ok := name2K8sService[vc]
 					if ok {
@@ -81,7 +81,7 @@ func analysisDubboCall(k8sServiceList []*mstype.K8sService) {
 	for i := range k8sServiceList { //每个模块
 		for _, v := range k8sServiceList[i].JavaClassAllList { //每个类
 			_, ok1 := name2JavaClass[v]
-			if ok1{
+			if ok1 {
 				for _, vd := range name2JavaClass[v].DubboReference { //每个类声明的dubbo远程调用
 					for j := range k8sServiceList {
 						if k8sServiceList[j].ProvideService(vd) {
@@ -100,9 +100,9 @@ func analysisDubboCall(k8sServiceList []*mstype.K8sService) {
 // 扫描间接调用未服务，需要class间的成员变量调用和切面调用的信息
 func analysisCallGraph(k8sServiceList []*mstype.K8sService) {
 	buildGraph(k8sServiceList)
-	for _, vn := range graph.Nodes{
-		vc, ok := name2JavaClass[vn.Value]//若该节点的类被模块使用，则有必要检查其可达节点
-		if ok{
+	for _, vn := range graph.Nodes {
+		vc, ok := name2JavaClass[vn.Value] //若该节点的类被模块使用，则有必要检查其可达节点
+		if ok {
 			graph.Reachable(vn, func(node *mstype.Node) {
 				vc.K8sService.JavaClassAllList = append(vc.K8sService.JavaClassAllList, node.Value)
 			})
@@ -110,7 +110,7 @@ func analysisCallGraph(k8sServiceList []*mstype.K8sService) {
 	}
 }
 
-/* 
+/*
 构造图 标记每个类之间的调用关系
 若一个类A的成员变量中使用了自动注入的另一个类B的变量
 若一个类A的成员方法中使用了另一个类B定义的Aspect注解
@@ -123,7 +123,7 @@ func buildGraph(k8sServiceList []*mstype.K8sService) {
 	aspect2Class = make(map[string]*mstype.JavaClass)
 	for _, v := range k8sServiceList { //每个模块
 		for _, vc := range v.JavaClassList { //每个类
-			for _, vca := range vc.DefineAspect{//该类定义的切面
+			for _, vca := range vc.DefineAspect { //该类定义的切面
 				aspect2Class[vca] = vc
 			}
 		}
@@ -136,24 +136,24 @@ func buildGraph(k8sServiceList []*mstype.K8sService) {
 	for _, v := range k8sServiceList { //每个模块
 		for _, vc := range v.JavaClassList { //每个类
 			name2JavaClass[vc.ClassName] = vc //建立类到类名的索引
-			graph.AddNode(&mstype.Node{Value:vc.ClassName})
+			graph.AddNode(&mstype.Node{Value: vc.ClassName})
 		}
 	}
 	//增加边
 	for _, v := range k8sServiceList { //每个模块
 		for _, vc := range v.JavaClassList { //每个类
-			for _, vcf := range vc.Field{ //若A的成员变量里有B
-				graph.AddEdge(&mstype.Node{Value:vc.ClassName}, &mstype.Node{Value:vcf})
+			for _, vcf := range vc.Field { //若A的成员变量里有B
+				graph.AddEdge(&mstype.Node{Value: vc.ClassName}, &mstype.Node{Value: vcf})
 			}
-			for _, vca := range vc.UseAspect{//若A使用的注解为B定义的切面
+			for _, vca := range vc.UseAspect { //若A使用的注解为B定义的切面
 				vcac, ok := aspect2Class[vca]
-				if ok{
-					graph.AddEdge(&mstype.Node{Value:vc.ClassName}, &mstype.Node{Value:vcac.ClassName})
+				if ok {
+					graph.AddEdge(&mstype.Node{Value: vc.ClassName}, &mstype.Node{Value: vcac.ClassName})
 				}
 			}
 		}
 	}
-	
+
 }
 
 // 删除数组中重复内容

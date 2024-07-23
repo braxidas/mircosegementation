@@ -2,18 +2,24 @@ package fileHandler
 
 import (
 	"fmt"
-	"microsegement/mstype"
+	// "microsegement/mstype"
 	"os"
 	"path/filepath"
 	"strings"
-	"gopkg.in/yaml.v3"
+
+	// "gopkg.in/yaml.v3"
+	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/api/apps/v1"
+	"sigs.k8s.io/yaml"
+	// "k8s.io/client-go/kubernetes"
+	// "k8s.io/client-go/rest"
 )
 
 //获得folder文件夹下所有部署yaml文件
-func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
+func ListDeploymentFile(folder string)([]*v1.Deployment, error){
 
 	var (
-		deploymentList []*mstype.Yaml2Go
+		deploymentList []*v1.Deployment
 	)
 	folder = getParentDirectory(folder)//获得上级路径
 
@@ -26,7 +32,7 @@ func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 			// conf, serviceName, err := parser.ParseYaml(path)
 			deployment, err := getK8sYamlFile(path)
 			if err != nil {
-				fmt.Printf("no valid deployment ymal in %s ,because %v \n", path, err)
+				fmt.Printf("no valid deployment yaml in %s ,because %v \n", path, err)
 			}
 			// fmt.Println(path)
 			deploymentList = append(deploymentList, deployment)
@@ -39,9 +45,10 @@ func ListDeploymentFile(folder string)([]*mstype.Yaml2Go, error){
 
 
 //读取deployment文件
-func getK8sYamlFile(yamlFilePath string)(*mstype.Yaml2Go, error){
-
-	deployment := new(mstype.Yaml2Go)
+func getK8sYamlFile(yamlFilePath string)(*v1.Deployment, error){
+	
+	deployment := new(v1.Deployment)
+	// deployment := new(mstype.Yaml2Go)
 	yamlFile, err := os.ReadFile(yamlFilePath)
 	if err != nil {
 		return deployment, fmt.Errorf("fail to read %s, because %v ", yamlFilePath, err)
@@ -52,8 +59,8 @@ func getK8sYamlFile(yamlFilePath string)(*mstype.Yaml2Go, error){
 		return deployment, fmt.Errorf("fail to unmarshal %s, because %v ", yamlFilePath, err)
 	}
 
-	if deployment.ApiVersion == "" && deployment.Kind == ""  {
-		return deployment,fmt.Errorf("missing required fields")
-	}
+	// if deployment.Spec.Template.Spec == "" && deployment.Kind == ""  {
+	// 	return deployment,fmt.Errorf("missing required fields")
+	// }
 	return deployment, nil
 }

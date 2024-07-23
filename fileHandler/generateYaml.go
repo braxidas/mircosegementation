@@ -22,7 +22,7 @@ func WriteToYaml(networkPolicy *mstype.NetworkPolicy) error {
 	err = os.WriteFile(filename, yamlData, 0777)
 
 	if err != nil {
-		return fmt.Errorf("failed to write networkpolicy to file '%s': %w", filename, err)
+		return fmt.Errorf("failed to write networkpolicy to file '%s': %v", filename, err)
 	}
 	return nil
 	

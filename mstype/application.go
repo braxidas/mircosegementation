@@ -84,6 +84,7 @@ type DiscoveryConfig struct {
 type ConfigConfig struct {
 	ServerAddr string `yaml:"server-addr"`
 	Group      string `yaml:"group"`
+	NameSpace string `yaml:"namespace"`
 }
 
 // #####
@@ -112,7 +113,7 @@ type MinioConfig struct {
 	Url string `yaml:"url"`
 }
 
-func (application Application) GetApplicationName() (string, error) {
+func (application *Application) GetApplicationName() (string, error) {
 	if len(application.Spring.Application.Name) != 0 {
 		return application.Spring.Application.Name, nil
 	}
@@ -121,3 +122,11 @@ func (application Application) GetApplicationName() (string, error) {
 	}
 	return "", fmt.Errorf("Application Name not Found")
 }
+
+// func (application *Application) ReplaceEnv(env map[string]string)error{
+
+
+
+
+// 	return nil
+// }

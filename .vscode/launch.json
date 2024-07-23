@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/main.go",
-            "args":["C:\\Users\\li_sh\\Desktop\\msexample\\example\\0ruoyiExample","-c","C:\\Users\\li_sh\\Desktop\\msexample\\example\\0ruoyiExample\\nacos_config_export\\DEFAULT_GROUP"]
+            "args":["policy","/root/work/example/nacosExample", "-c","/root/work/example/nacosExample/nacos_config_export/"]
         }
     ]
 }

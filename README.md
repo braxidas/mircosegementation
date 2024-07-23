@@ -1,6 +1,8 @@
 # 环境
 java17及以上(需配置环境变量)
 golang1.22
+CGO_ENABLED=1
+gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
 # 使用方式
 将soot-analysis-1.0-SNAPSHOT.jar文件和go文件放在同一目录下
 运行命令：go run main.go (目标文件夹)

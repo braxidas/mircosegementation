@@ -2,43 +2,37 @@ package mstype
 
 import "fmt"
 
-
 /*
 此类用于描述一个微服务
 */
 
-//描述K8s服务
+// 描述K8s服务
 type K8sService struct {
 	FilePath             string //jar包所在路径
 	DeploymentPath       string //部署文件所在路径
 	NacosApplicationFile string //注册中心配置文件所在路径
 
-	ApplicationName string // 向注册中心注册服务名
-	PodName         string //最终部署到k8s中的微服务名称
+	ApplicationName string            //向注册中心注册服务名
+	PodName         string            //最终部署到k8s中的微服务名称
+	Namespace       string            //Namespace
+	ApiVersion      string            //apiVersion
+	Labels          map[string]string //匹配选择器
 	ServiceName     string
 
 	Ingress map[*K8sService]struct{} //networkpolicy的ingress集合 针对nacos中的微服务
 	Egress  map[*K8sService]struct{} //networkpolicy的egress列表	针对nacos中的微服务
 
-	IngressOut []*Policy	//networkpolicy的ingress集合	包括外部组件的ip
-	EgressOut []*Policy	//networkpolicy的egress列表	包括外部组件的ip
-
+	IngressOut []*Policy //networkpolicy的ingress集合	包括外部组件的ip
+	EgressOut  []*Policy //networkpolicy的egress列表	包括外部组件的ip
 
 	JavaClassList    []*JavaClass //soot扫描到的该服务中直接定义的类
 	JavaClassAllList []string     //图分析后该服务中实际应用的全部类
-								//用string是因为实际应用的类不一定是自定义类，如redisService，为了之后可能有非自定义类需要分析，所以保留
+	//用string是因为实际应用的类不一定是自定义类，如redisService，为了之后可能有非自定义类需要分析，所以保留
 
 	ApplicationList []*Application //用于表示k8sService的配置文件列表
-	// OutPortList []*Policy  //该service需要使用的外部端口,使用policy构成一部分
-	// //spring cloud逻辑
-	// Consume       []string //消费的服务
-	// JavaInterface []string //使用的interface(interface使用的服务也要记录)
-	// //spring dubbo逻辑
-	// DubboReference []string //提供的dubbo的service
-	// DubboService   []string //消费的dubbo的service
 }
 
-//描述java中的类接口
+// 描述java中的类接口
 type JavaClass struct {
 	K8sService     *K8sService //指向该类所属的模块
 	ClassName      string      `json:"className"`      //类名称
@@ -50,8 +44,6 @@ type JavaClass struct {
 	UseAspect      []string    `json:"useAspect"`      //表示类方法使用的注解集合，可能与aspect对应
 }
 
-
-
 func (k8sService *K8sService) AppendIngress(ingress *K8sService) {
 	k8sService.Ingress[ingress] = struct{}{}
 }
@@ -60,7 +52,7 @@ func (k8sService *K8sService) AppendEgress(egress *K8sService) {
 	k8sService.Egress[egress] = struct{}{}
 }
 
-//判断一个类是否调用了该微服务
+// 判断一个类是否调用了该微服务
 func (k8sService *K8sService) ProvideService(dubboReference string) bool {
 	for _, v := range k8sService.JavaClassList {
 		for _, vc := range v.DubboService {
@@ -72,7 +64,7 @@ func (k8sService *K8sService) ProvideService(dubboReference string) bool {
 	return false
 }
 
-//判断一个类是否调用了该类的dubbo的rpc
+// 判断一个类是否调用了该类的dubbo的rpc
 func (javaClass *JavaClass) ProvideDubbo(dubboReference string) bool {
 	for _, vc := range javaClass.DubboService {
 		if vc == dubboReference {

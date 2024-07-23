@@ -8,6 +8,7 @@ import (
 	"microsegement/mstype"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -44,9 +45,11 @@ func ListJarFile(folder string) ([]*mstype.Application,[]string, error) {
 	return applicationList,pathList,nil
 }
 
-// 获得指定jar包中的a配置yaml文件
+// 获得指定jar包中的application配置yaml文件
 func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 	application := new(mstype.Application)
+
+	env := getEnv(getParentDirectory(jarFile))
 
 	r, err := zip.OpenReader(jarFile)
 	if err != nil {
@@ -66,10 +69,18 @@ func getJarYamlFile(jarFile string) (*mstype.Application, error) {
 			if err != nil {
 				return application, err
 			}
+			yamlFile, err = handleEnv(yamlFile, env)
+			if err != nil {
+				return application, err
+			}
 
 			err = yaml.Unmarshal(yamlFile, application)
 			if err != nil{
 				return application, err
+			}
+
+			if err != nil{
+				return application, nil
 			}
 
 			_, err = application.GetApplicationName()
@@ -88,14 +99,19 @@ func getParentDirectory(path string) string {
 	return path[0:strings.LastIndex(path, separator)]
 }
 
+func handleEnv(yamlFile []byte, env map[string]string) ([]byte, error){
+	yamlContent := string(yamlFile)
+	re := regexp.MustCompile(`\$\{[\w]+\}`)
+	envs := re.FindAllString(yamlContent, -1)
+	for _, v := range envs{
+		temp := v[2: len(v) - 1]
+		if val, ok := env[temp]; ok{//如果环境变量中含有该值，则用环境变量对应的值替换
+			strings.ReplaceAll(yamlContent, v, val)
+		}else if strings.Contains(temp, ":"){//如果环境变量中不含有该值，则用：后的默认值替换
+			strings.ReplaceAll(yamlContent, v, temp[strings.LastIndex(temp, ":") + 1:])
+		}
+	}
 
-// func TestYaml() {
-// 	application := new(mstype.Application)
-// 	mp := make(map[string]interface{})
-// 	yamlFile, _ := os.ReadFile(`target\application.yml`)
-// 	err := yaml.Unmarshal(yamlFile, &mp)
-// 	fmt.Println(mp)
-// 	err = yaml.Unmarshal(yamlFile, application)
-// 	fmt.Println(err)
-// 	fmt.Println(application)
-// }
+	return []byte(yamlContent),nil
+}
+
