@@ -15,6 +15,11 @@ var (
 	name2JavaClass map[string]*mstype.JavaClass //通过类名获得其类信息//如果类名存在于key中则表示是自定义类
 	graph          mstype.Graph                 //每个类之间的调用关系图
 )
+/**
+构造每个微服务的调用图
+即将先统计每个微服务直接调用的类节点和间接调用的类节点
+再根据其类节点调用的微服务确定其调用的全部微服务
+**/
 
 func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService, error) {
 
@@ -64,11 +69,16 @@ func analysisDirectCall(k8sServiceList []*mstype.K8sService) {
 			_, ok1 := name2JavaClass[v] //如果该类为自定义的类
 			if ok1 {
 				for _, vc := range name2JavaClass[v].Consume { //每个类声明的调用
-					ks, ok := name2K8sService[vc]
-					if ok {
+					// ks, ok := name2K8sService[vc]
+					if ks, ok := name2K8sService[vc]; ok {//若该类调用的该微服务被扫描，直接添加其服务的节点
 						k8sServiceList[i].AppendEgress(ks)
 						ks.AppendIngress(k8sServiceList[i])
 					}
+					// else{                            //若该类调用的该微服务没有被扫描，直接添加其名字
+					// 	if podname, ok1 := svc2Pod[vc]; ok1{
+					// 		k8sServiceList[i].EgressOut = append(k8sServiceList[i].EgressOut,mstype.NewPodPolicy(getLabel(podname)))
+					// 	}
+					// }
 					// updateClass2Service(name2JavaClass[v].ClassName, ks)
 				}
 			}

@@ -62,14 +62,14 @@ func handleConfig(k8sServiceList []*mstype.K8sService) []*mstype.K8sService {
 func handleEgress(application *mstype.Application) []*mstype.Policy {
 	var egress []*mstype.Policy
 	//Nacos
-	if application.Spring.Cloud.Nacos.Discovery.ServerAddr != "" {
+	if application.Spring.Cloud.Nacos.Discovery.ServerAddr != "" && application.Spring.Cloud.Nacos.Discovery.ServerAddr != "localhost" {
 		addr := strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":")[0]
 		if v, ok := svc2Pod[addr]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 		} else {
 			egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
 		}
-	} else if application.Spring.Cloud.Nacos.Config.ServerAddr != "" {
+	} else if application.Spring.Cloud.Nacos.Config.ServerAddr != "" && application.Spring.Cloud.Nacos.Config.ServerAddr != "localhost" {
 		addr := strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":")[0]
 		if v, ok := svc2Pod[addr]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
@@ -78,7 +78,7 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 		}
 	}
 	//Redis
-	if application.Spring.Redis.Host != "" {
+	if application.Spring.Redis.Host != "" && application.Spring.Redis.Host != "localhost"{
 		port, _ := strconv.Atoi(application.Spring.Redis.Port)
 		if v, ok := svc2Pod[application.Spring.Redis.Host]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
@@ -89,41 +89,49 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	//Database
 	if application.Spring.DataSource.Url != "" {
 		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Url, "jdbc:", ""))
-		if v, ok := svc2Pod[host]; ok {
-			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
-		} else {
-			port, _ := strconv.Atoi(portStr)
-			egress = append(egress, mstype.NewEgress(port, host))
+		if host != "localhost"{
+			if v, ok := svc2Pod[host]; ok {
+				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
+			} else {
+				port, _ := strconv.Atoi(portStr)
+				egress = append(egress, mstype.NewEgress(port, host))
+			}
 		}
 	}
 	if application.Spring.DataSource.Dynamic.DataSource.Master.Url != "" {
 		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Dynamic.DataSource.Master.Url, "jdbc:", ""))
-		if v, ok := svc2Pod[host]; ok {
-			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
-		} else {
-			port, _ := strconv.Atoi(portStr)
-			egress = append(egress, mstype.NewEgress(port, host))
+		if host != "localhost"{
+			if v, ok := svc2Pod[host]; ok {
+				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
+			} else {
+				port, _ := strconv.Atoi(portStr)
+				egress = append(egress, mstype.NewEgress(port, host))
+			}
 		}
 	}
 	// Minio
 	if application.Minio.Url != "" {
 		host, portStr := getHostPort(application.Minio.Url)
-		if v, ok := svc2Pod[host]; ok {
-			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
-		} else {
-			port, _ := strconv.Atoi(portStr)
-			egress = append(egress, mstype.NewEgress(port, host))
+		if host != "localhost"{
+			if v, ok := svc2Pod[host]; ok {
+				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
+			} else {
+				port, _ := strconv.Atoi(portStr)
+				egress = append(egress, mstype.NewEgress(port, host))
+			}
 		}
 	}
 	//Fdfs
 	if application.Fdfs.Domain != "" {
 		host, _ := getHostPort(application.Fdfs.Domain)
-		if v, ok := svc2Pod[host]; ok {
-			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
-		} else {
-			portStr := strings.Split(application.Fdfs.TrackerList, ":")[1]
-			port, _ := strconv.Atoi(portStr)
-			egress = append(egress, mstype.NewEgress(port, host))
+		if host != "localhost"{
+			if v, ok := svc2Pod[host]; ok {
+				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
+			} else {
+				portStr := strings.Split(application.Fdfs.TrackerList, ":")[1]
+				port, _ := strconv.Atoi(portStr)
+				egress = append(egress, mstype.NewEgress(port, host))
+			}
 		}
 	}
 	//spring.cloud.gateway.routes
