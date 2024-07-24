@@ -18,7 +18,7 @@ func GenerateIpPolicy(k8sServiceList []*mstype.K8sService) []*mstype.NetworkPoli
 	os.Mkdir("output",0766)
 	for _, v := range finalK8sServiceList {
 		networkPolicy := new(mstype.NetworkPolicy)
-		networkPolicy.ApiVerson = v.ApiVersion
+		networkPolicy.ApiVerson = "networking.k8s.io/v1"
 		networkPolicy.Kind = "NetworkPolicy"
 		networkPolicy.Metadata.Name = v.PodName + "-policy"
 		networkPolicy.Metadata.Namespace = v.Namespace
