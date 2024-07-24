@@ -35,7 +35,7 @@ type ApplicationConfig struct {
 
 // ##
 type CloudConfig struct {
-	Nacos NacosConfig `yaml:"nacos"`
+	Nacos   NacosConfig   `yaml:"nacos"`
 	Gateway GatewayConfig `yaml:"gateway"`
 }
 
@@ -55,7 +55,7 @@ type NacosConfig struct {
 	Config    ConfigConfig    `yaml:"config"`
 }
 
-type GatewayConfig struct{
+type GatewayConfig struct {
 	Routes []*RouteConfig `yaml:"routes"`
 }
 
@@ -65,11 +65,10 @@ type DynamicConfig struct {
 }
 
 // ####
-type RouteConfig struct{
-	Id string `yaml:"id"`
-	Uri string  `yaml:"uri"`
+type RouteConfig struct {
+	Id  string `yaml:"id"`
+	Uri string `yaml:"uri"`
 }
-
 
 // ####
 type DataSourceLiConfig struct {
@@ -84,7 +83,9 @@ type DiscoveryConfig struct {
 type ConfigConfig struct {
 	ServerAddr string `yaml:"server-addr"`
 	Group      string `yaml:"group"`
-	NameSpace string `yaml:"namespace"`
+	NameSpace  string `yaml:"namespace"`
+	Username   string `yaml:"username"`
+	Password   string `yaml:"password"`
 }
 
 // #####
@@ -123,10 +124,10 @@ func (application *Application) GetApplicationName() (string, error) {
 	return "", fmt.Errorf("Application Name not Found")
 }
 
-// func (application *Application) ReplaceEnv(env map[string]string)error{
-
-
-
-
-// 	return nil
-// }
+// 此类用于实现返回nacos相关信息
+type NacosInfo struct {
+	ServerAddr string `json:server-addr`
+	Namespace  string `json:"namespace"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+}

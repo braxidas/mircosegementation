@@ -1,6 +1,7 @@
 package serviceHandler
 
 import (
+	"encoding/json"
 	"fmt"
 	"microsegement/fileHandler"
 	"microsegement/mstype"
@@ -42,7 +43,7 @@ func RegisterService(folder string, nacosFolder string) ([]*mstype.K8sService, e
 		if len(deploymentList) > 0 { //有deployment文件的情况
 			// k8sService.PodName = deploymentList[0].Spec.Template.Metadata.Labels.App
 			k8sService.PodName = deploymentList[0].Spec.Template.Labels["app"]
-			k8sService.ApiVersion = "apps/v1"//deploymentList[0].ManagedFields[0].APIVersion//????
+			k8sService.ApiVersion = "apps/v1" //deploymentList[0].ManagedFields[0].APIVersion//????
 			k8sService.Namespace = deploymentList[0].Namespace
 			k8sService.Labels = deploymentList[0].Spec.Template.Labels
 			name2K8sService[k8sService.ApplicationName] = k8sService
@@ -67,12 +68,20 @@ func RegisterService(folder string, nacosFolder string) ([]*mstype.K8sService, e
 
 // 扫描jar包返回扫描得到的nacos namespace信息
 func GetNacosNameSpace(folder string) {
+	var nacosInfoList []mstype.NacosInfo
 
 	applicationList, _, _ := fileHandler.ListJarFile(folder)
 
-	for i := range applicationList {
-		fmt.Println(applicationList[i].Spring.Cloud.Nacos.Config.NameSpace)
+	for _, v := range applicationList {
+		nacosInfoList = append(nacosInfoList, mstype.NacosInfo{
+			ServerAddr: v.Spring.Cloud.Nacos.Config.ServerAddr,
+			Namespace:  v.Spring.Cloud.Nacos.Config.NameSpace,
+			Username:   v.Spring.Cloud.Nacos.Config.Username,
+			Password:   v.Spring.Cloud.Nacos.Config.Password,
+		})
 	}
+	res, _ := json.Marshal(nacosInfoList)
+	fmt.Println(string(res))
 }
 
 // 根据svc.json获得svc到pod的映射
