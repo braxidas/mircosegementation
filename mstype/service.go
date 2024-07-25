@@ -51,9 +51,17 @@ func (k8sService *K8sService) AppendIngress(ingress *K8sService) {
 	k8sService.Ingress[ingress] = struct{}{}
 }
 
+
+
 func (k8sService *K8sService) AppendEgress(egress *K8sService) {
 	k8sService.Egress[egress] = struct{}{}
 }
+//合并map
+func (k8sService *K8sService) MergeIgress(egress map[*K8sService]struct{}){
+	for k, _ := range egress{
+		k8sService.Egress[k] = struct{}{}
+	}
+} 
 
 // 判断一个类是否调用了该微服务
 func (k8sService *K8sService) ProvideService(dubboReference string) bool {
@@ -65,6 +73,13 @@ func (k8sService *K8sService) ProvideService(dubboReference string) bool {
 		}
 	}
 	return false
+}
+
+
+func (k8sService *K8sService) Egress2EgressOut(){
+	for k := range k8sService.Egress {
+		k8sService.EgressOut = append(k8sService.EgressOut, NewPodPolicy(k.Labels))
+	}
 }
 
 // 判断一个类是否调用了该类的dubbo的rpc

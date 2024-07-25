@@ -46,18 +46,18 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 	analysisDirectCall(k8sServiceList)
 	analysisDubboCall(k8sServiceList)
 
-	for _, v := range k8sServiceList {
-		//生成json文件
-		// err := fileHandler.WriteToJson(v)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-		//根据pod名称 向最终的策略文件中添加策略
-		for k := range v.Egress {
-			v.EgressOut = append(v.EgressOut, mstype.NewPodPolicy(k.Labels))
-		}
-		//
-	}
+	// for _, v := range k8sServiceList {
+	// 	//生成json文件
+	// 	// err := fileHandler.WriteToJson(v)
+	// 	// if err != nil {
+	// 	// 	fmt.Println(err)
+	// 	// }
+	// 	//根据pod名称 向最终的策略文件中添加策略
+	// 	for k := range v.Egress {
+	// 		v.EgressOut = append(v.EgressOut, mstype.NewPodPolicy(k.Labels))
+	// 	}
+	// 	//
+	// }
 
 	return k8sServiceList, nil
 }

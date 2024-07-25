@@ -49,18 +49,21 @@ func handleConfig(k8sServiceList []*mstype.K8sService) []*mstype.K8sService {
 			continue
 		}
 		for _, va := range v.ApplicationList {
-			egress := handleEgress(va)
+			egress,egress2 := handleEgress(va)
 			v.EgressOut = append(v.EgressOut, egress...)
+			v.MergeIgress(egress2)
 			ingress := handleIngress(va)
 			v.IngressOut = append(v.IngressOut, ingress...)
 		}
+		v.Egress2EgressOut()
 		finalK8sServiceList = append(finalK8sServiceList, v)
 	}
 	return finalK8sServiceList
 }
 
-func handleEgress(application *mstype.Application) []*mstype.Policy {
+func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype.K8sService]struct{}) {
 	var egress []*mstype.Policy
+	egress2 := make(map[*mstype.K8sService]struct{})
 	//Nacos
 	if application.Spring.Cloud.Nacos.Discovery.ServerAddr != "" && application.Spring.Cloud.Nacos.Discovery.ServerAddr != "localhost" {
 		addr := strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":")[0]
@@ -89,7 +92,7 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	//Database
 	if application.Spring.DataSource.Url != "" {
 		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Url, "jdbc:", ""))
-		if host != "localhost"{
+		if host != "localhost"&& host != ""{
 			if v, ok := svc2Pod[host]; ok {
 				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 			} else {
@@ -100,7 +103,7 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	}
 	if application.Spring.DataSource.Dynamic.DataSource.Master.Url != "" {
 		host, portStr := getHostPort(strings.ReplaceAll(application.Spring.DataSource.Dynamic.DataSource.Master.Url, "jdbc:", ""))
-		if host != "localhost"{
+		if host != "localhost"&& host != ""{
 			if v, ok := svc2Pod[host]; ok {
 				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 			} else {
@@ -112,7 +115,7 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	// Minio
 	if application.Minio.Url != "" {
 		host, portStr := getHostPort(application.Minio.Url)
-		if host != "localhost"{
+		if host != "localhost"&& host != ""{
 			if v, ok := svc2Pod[host]; ok {
 				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 			} else {
@@ -124,7 +127,7 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	//Fdfs
 	if application.Fdfs.Domain != "" {
 		host, _ := getHostPort(application.Fdfs.Domain)
-		if host != "localhost"{
+		if host != "localhost" && host != ""{
 			if v, ok := svc2Pod[host]; ok {
 				egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 			} else {
@@ -138,11 +141,11 @@ func handleEgress(application *mstype.Application) []*mstype.Policy {
 	if len(application.Spring.Cloud.Gateway.Routes) > 0 {
 		for _, v := range application.Spring.Cloud.Gateway.Routes {
 			if vs, ok := name2K8sService[getUriName(v.Uri)]; ok {
-				egress = append(egress, mstype.NewPodPolicy(vs.Labels))
+				egress2[vs] = struct{}{}// append(egress, mstype.NewPodPolicy(vs.Labels))
 			}
 		}
 	}
-	return egress
+	return egress, egress2
 }
 func handleIngress(application *mstype.Application) []*mstype.Policy {
 	var ingress []*mstype.Policy
@@ -159,6 +162,7 @@ func getHostPort(urlstr string) (string, string) {
 	u, err := url.Parse(urlstr)
 	if err != nil {
 		fmt.Println("wrong parser", urlstr, err.Error())
+		return "", ""
 	}
 	if v, ok := svc2Pod[u.Hostname()]; ok == true {
 		return v, u.Port()
