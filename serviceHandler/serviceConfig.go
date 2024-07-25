@@ -70,14 +70,25 @@ func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype
 		if v, ok := svc2Pod[addr]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 		} else {
-			egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
+			if (len(strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":")) > 1){
+				port, _ := strconv.Atoi((strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":"))[1])
+				egress = append(egress, mstype.NewEgress(port, addr))
+			}else{
+				egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
+			}
 		}
-	} else if application.Spring.Cloud.Nacos.Config.ServerAddr != "" && application.Spring.Cloud.Nacos.Config.ServerAddr != "localhost" {
+	} 
+	if application.Spring.Cloud.Nacos.Config.ServerAddr != "" && application.Spring.Cloud.Nacos.Config.ServerAddr != "localhost" {
 		addr := strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":")[0]
 		if v, ok := svc2Pod[addr]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
 		} else {
-			egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
+			if (len(strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":")) > 1){
+				port, _ := strconv.Atoi((strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":"))[1])
+				egress = append(egress, mstype.NewEgress(port, addr))
+			}else{
+				egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
+			}
 		}
 	}
 	//Redis
