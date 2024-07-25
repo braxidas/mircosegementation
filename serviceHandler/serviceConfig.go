@@ -175,9 +175,9 @@ func getHostPort(urlstr string) (string, string) {
 		fmt.Println("wrong parser", urlstr, err.Error())
 		return "", ""
 	}
-	if v, ok := svc2Pod[u.Hostname()]; ok == true {
-		return v, u.Port()
-	}
+	// if v, ok := svc2Pod[u.Hostname()]; ok == true {
+	// 	return v, u.Port()
+	// }
 	return u.Hostname(), u.Port()
 }
 
