@@ -78,8 +78,7 @@ func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype
 				egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
 			}
 		}
-	} 
-	if application.Spring.Cloud.Nacos.Config.ServerAddr != "" && application.Spring.Cloud.Nacos.Config.ServerAddr != "localhost" {
+	} else if application.Spring.Cloud.Nacos.Config.ServerAddr != "" && application.Spring.Cloud.Nacos.Config.ServerAddr != "localhost" {
 		addr := strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":")[0]
 		if v, ok := svc2Pod[addr]; ok {
 			egress = append(egress, mstype.NewPodPolicy(getLabel(v)))
