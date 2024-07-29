@@ -8,16 +8,17 @@ import "fmt"
 
 // 描述K8s服务
 type K8sService struct {
+	ApplicationName string //向注册中心注册服务名
+	PodName         string //最终部署到k8s中的微服务名称
+
 	FilePath             string //jar包所在路径
 	DeploymentPath       string //部署文件所在路径
 	NacosApplicationFile string //注册中心配置文件所在路径
 
-	ApplicationName string            //向注册中心注册服务名
-	PodName         string            //最终部署到k8s中的微服务名称
-	Namespace       string            //Namespace
-	ApiVersion      string            //apiVersion
-	Labels          map[string]string //匹配选择器
-	ServiceName     string
+	Namespace   string            //Namespace
+	ApiVersion  string            //apiVersion
+	Labels      map[string]string //匹配选择器
+	ServiceName string
 
 	Ingress map[*K8sService]struct{} //networkpolicy的ingress集合 针对nacos中的微服务
 	Egress  map[*K8sService]struct{} //networkpolicy的egress列表	针对nacos中的微服务
@@ -51,17 +52,16 @@ func (k8sService *K8sService) AppendIngress(ingress *K8sService) {
 	k8sService.Ingress[ingress] = struct{}{}
 }
 
-
-
 func (k8sService *K8sService) AppendEgress(egress *K8sService) {
 	k8sService.Egress[egress] = struct{}{}
 }
-//合并map
-func (k8sService *K8sService) MergeIgress(egress map[*K8sService]struct{}){
-	for k, _ := range egress{
+
+// 合并map
+func (k8sService *K8sService) MergeIgress(egress map[*K8sService]struct{}) {
+	for k, _ := range egress {
 		k8sService.Egress[k] = struct{}{}
 	}
-} 
+}
 
 // 判断一个类是否调用了该微服务
 func (k8sService *K8sService) ProvideService(dubboReference string) bool {
@@ -75,8 +75,7 @@ func (k8sService *K8sService) ProvideService(dubboReference string) bool {
 	return false
 }
 
-
-func (k8sService *K8sService) Egress2EgressOut(){
+func (k8sService *K8sService) Egress2EgressOut() {
 	for k := range k8sService.Egress {
 		k8sService.EgressOut = append(k8sService.EgressOut, NewPodPolicy(k.Labels))
 	}

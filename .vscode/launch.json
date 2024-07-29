@@ -10,7 +10,8 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/main.go",
-            "args":["policy","/root/work/example/nacosExample", "-c","/root/work/example/nacosExample/nacos_config_export/"]
+            // "args":["policy","/root/work/example/nacosExample", "-c","/root/work/example/nacosExample/nacos_config_export/"]
+            "args":["policy","/root/work/example/nacosExample"]
         }
     ]
 }

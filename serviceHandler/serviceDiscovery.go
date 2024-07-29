@@ -32,9 +32,9 @@ func DiscoverService(k8sServiceList []*mstype.K8sService) ([]*mstype.K8sService,
 			fmt.Println(err)
 			continue
 		}
-		if len(javaClassList) == 1 {
-			continue
-		}
+		// if len(javaClassList) == 1 {
+		// 	continue
+		// }
 		k8sServiceList[i].JavaClassList = javaClassList
 		for _, v := range k8sServiceList[i].JavaClassList { //建议类名和使用该类的微服务的索引
 			// class2Service[v.ClassName] = k8sServiceList[i]

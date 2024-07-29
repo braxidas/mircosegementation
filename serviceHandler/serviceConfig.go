@@ -72,8 +72,8 @@ func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype
 		} else {
 			if (len(strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":")) > 1){
 				port, _ := strconv.Atoi((strings.Split(application.Spring.Cloud.Nacos.Discovery.ServerAddr, ":"))[1])
-				egress = append(egress, []*mstype.Policy{mstype.NewEgress(port, addr),mstype.NewEgress(port+1000, addr),
-					mstype.NewEgress(port+1001, addr),mstype.NewEgress(port-1000, addr)}...)
+				egress = append(egress, []*mstype.Policy{mstype.NewEgress(port, addr),mstype.NewEgress(port+1000, addr)}...)
+					// mstype.NewEgress(port+1001, addr),mstype.NewEgress(port-1000, addr)}...)
 			}else{
 				egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
 			}
@@ -86,8 +86,8 @@ func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype
 		} else {
 			if (len(strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":")) > 1){
 				port, _ := strconv.Atoi((strings.Split(application.Spring.Cloud.Nacos.Config.ServerAddr, ":"))[1])
-				egress = append(egress, []*mstype.Policy{mstype.NewEgress(port, addr),mstype.NewEgress(port+1000, addr),
-					mstype.NewEgress(port+1001, addr),mstype.NewEgress(port-1000, addr)}...)
+				egress = append(egress, []*mstype.Policy{mstype.NewEgress(port, addr),mstype.NewEgress(port+1000, addr)}...)
+					// mstype.NewEgress(port+1001, addr),mstype.NewEgress(port-1000, addr)}...)
 			}else{
 				egress = append(egress, []*mstype.Policy{mstype.NewEgress(8848, addr), mstype.NewEgress(9848, addr)}...)
 			}
