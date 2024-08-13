@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	name2K8sService map[string]*mstype.K8sService //通过服务名称取得该微服务的信息
+	name2K8sService map[string]*mstype.K8sService //通过服务名称取得该微服务的信息 
 	svc2Pod         map[string]string             //通得过svc名获得pod
 )
 

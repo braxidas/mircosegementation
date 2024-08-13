@@ -20,6 +20,8 @@ type K8sService struct {
 	Labels      map[string]string //匹配选择器
 	ServiceName string
 
+	// NacosNamespace string //nacos配置文件的namespace
+
 	Ingress map[*K8sService]struct{} //networkpolicy的ingress集合 针对nacos中的微服务
 	Egress  map[*K8sService]struct{} //networkpolicy的egress列表	针对nacos中的微服务
 
@@ -77,7 +79,9 @@ func (k8sService *K8sService) ProvideService(dubboReference string) bool {
 
 func (k8sService *K8sService) Egress2EgressOut() {
 	for k := range k8sService.Egress {
-		k8sService.EgressOut = append(k8sService.EgressOut, NewPodPolicy(k.Labels))
+		if k8sService.Namespace == k.Namespace {
+			k8sService.EgressOut = append(k8sService.EgressOut, NewPodPolicy(k.Labels))
+		}
 	}
 }
 
@@ -99,4 +103,14 @@ func (javaClass *JavaClass) PrintInfo() {
 	fmt.Println("DubboService :", javaClass.DubboService)
 	fmt.Println("DefineAspect:", javaClass.DefineAspect)
 	fmt.Println("UseAspect :", javaClass.UseAspect)
+}
+
+
+func (k8sService *K8sService)GetNacosConfigNamespace()string{
+	for _, v := range k8sService.ApplicationList{
+		if v.Spring.Cloud.Nacos.Config.NameSpace != ""{
+			return v.Spring.Cloud.Nacos.Config.NameSpace
+		}
+	}
+	return ""
 }

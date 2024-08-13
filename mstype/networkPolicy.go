@@ -47,10 +47,15 @@ type TargetPort struct {
 }
 type TargetTo struct {
 	Ipblock     IpBlock     `yaml:"ipBlock,omitempty"`
+	NamespaceSelector NamespaceSelector `yaml:"namespaceSelector,omitempty"`
 	PodSelector PodSelector `yaml:"podSelector,omitempty"`
 }
 type IpBlock struct {
 	Cidr string `yaml:"cidr,omitempty"`
+}
+
+type NamespaceSelector struct{
+	
 }
 
 // 根据外部ip生成egress

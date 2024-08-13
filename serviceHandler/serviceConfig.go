@@ -60,7 +60,7 @@ func handleConfig(k8sServiceList []*mstype.K8sService) []*mstype.K8sService {
 	}
 	return finalK8sServiceList
 }
-
+//将配置文件中的ip添加到selector列表中
 func handleEgress(application *mstype.Application) ([]*mstype.Policy,map[*mstype.K8sService]struct{}) {
 	var egress []*mstype.Policy
 	egress2 := make(map[*mstype.K8sService]struct{})

@@ -16,6 +16,11 @@ func ListNacosYamlFile(folder string, k8sService *mstype.K8sService) error {
 		return nil
 	}
 
+	//只搜索nacos config指定namespace中的文件
+	if k8sService.GetNacosConfigNamespace() != "" {
+		folder = filepath.Join(folder, k8sService.GetNacosConfigNamespace())
+	}
+
 	// folder = getParentDirectory(folder) //获得上级路径
 
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
